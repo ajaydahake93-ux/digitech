@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Growth - Pay Now</title>
+    <style>
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ff3e3e; }
+            50% { box-shadow: 0 0 20px #ff3e3e; transform: scale(1.05); }
+            100% { box-shadow: 0 0 5px #ff3e3e; }
+        }
+        body { font-family: Arial, sans-serif; background: #0a0a0a; color: white; text-align: center; margin: 0; padding-bottom: 120px; }
+        .demo-pill { background: #ff3e3e; color: white; padding: 10px 25px; border-radius: 50px; display: inline-block; margin-top: 30px; animation: glow 2s infinite; font-weight: bold; text-transform: uppercase; }
+        .header h1 { font-size: 26px; margin: 20px 0; font-weight: 800; }
+        .header span { color: #ffd700; }
+        .card { background: white; color: black; border-radius: 15px; padding: 15px; margin: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .price { font-size: 28px; color: #ff3e3e; font-weight: bold; }
+        
+        .upi-section { background: #1a1a1a; padding: 20px; margin: 20px; border-radius: 20px; border: 2px solid #ffd700; }
+        .qr-box { background: white; width: 220px; height: 220px; margin: 15px auto; border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: center; }
+        .qr-box img { width: 100%; height: 100%; }
+        
+        .upi-id-display { background: #333; padding: 12px; border-radius: 8px; margin: 10px 0; color: #ffd700; font-size: 16px; font-weight: bold; border: 1px solid #555; letter-spacing: 0.5px; overflow-wrap: break-word; }
+        .copy-btn { background: #ffd700; color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; width: 100%; font-size: 16px; }
+
+        .wa-btn { position: fixed; bottom: 0; left: 0; width: 100%; background: #25d366; color: white; padding: 20px; text-decoration: none; font-weight: bold; font-size: 20px; z-index: 1000; display: block; border: none; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="demo-pill">FREE DEMO - TRY NOW!</div>
+
+    <div class="header">
+        <h1>🚀 Grow Your <span>Social Media</span></h1>
+    </div>
+    
+    <div class="card">
+        <h3>1000 Instagram Followers</h3>
+        <div class="price">₹199</div>
+    </div>
+
+    <div class="card">
+        <h3>1000 Instagram Likes</h3>
+        <div class="price">₹99</div>
+    </div>
+
+    <div class="card">
+        <h3>10,000 Instagram Views</h3>
+        <div class="price">₹49</div>
+    </div>
+
+    <div class="upi-section">
+        <h2 style="color: #ffd700; margin-top: 0;">Payment Method</h2>
+        <p style="font-size: 14px; color: #ccc;">नीचे दिए गए QR कोड का स्क्रीनशॉट लें और स्कैन करके पेमेंट करें</p>
+        
+        <div class="qr-box">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=kishorkukade1986@okhdfcbank%26pn=Kishor%26cu=INR" alt="Scan to Pay">
+        </div>
+
+        <p style="font-size: 14px; color: #ccc; margin-top: 15px;">या UPI ID कॉपी करें:</p>
+        <div class="upi-id-display" id="upiid">kishorkukade1986@okhdfcbank</div>
+        <button class="copy-btn" onclick="copyUPI()">Copy UPI ID</button>
+        
+        <p style="font-size: 12px; color: #aaa; margin-top: 10px;">पैसे भेजने के बाद नीचे दिए गए बटन पर क्लिक करके स्क्रीनशॉट भेजें।</p>
+    </div>
+
+    <a href="https://wa.me/919834659334?text=Hello,%20I%20have%20completed%20the%20payment.%20Here%20is%20the%20screenshot." class="wa-btn">
+        पेमेंट का स्क्रीनशॉट भेजें
+    </a>
+
+    <script>
+        function copyUPI() {
+            var upiText = document.getElementById("upiid").innerText;
+            var tempInput = document.createElement("input");
+            tempInput.value = upiText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            alert("UPI ID Copied: " + upiText);
+        }
+    </script>
+
+</body>
+</html>
