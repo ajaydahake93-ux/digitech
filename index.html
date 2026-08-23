@@ -70,7 +70,9 @@ body.gsm-body {
 .qr-holder img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
 .badge-footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 25px; }
 .footer-badge-item { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; }
-.faq-head-section-title { font-size: 16px; font-weight: 800; margin: 35px 0 12px 0; color: #cbd5e1; text-align: center; }
+.faq-title-banner { margin:35px 0 12px; padding:24px 16px; border-radius:12px 12px 0 0; text-align:center; color:#fff; background:linear-gradient(135deg,#00796b,#0097a7); box-shadow:0 8px 24px rgba(0,151,167,.2); }
+.faq-head-section-title { font-size:22px; font-weight:800; line-height:1.2; }
+.faq-head-section-subtitle { margin-top:8px; font-size:13px; color:rgba(255,255,255,.86); line-height:1.4; }
 .faq-accordion-box { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; margin-bottom: 20px; }
 .faq-row-item { border-bottom: 1px solid var(--border-color); }
 .faq-row-item:last-child { border-bottom: none; }
@@ -86,6 +88,30 @@ body.gsm-body {
   70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37,211,102,0); }
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(37,211,102,0); }
 }
+
+.profile-preview-card { display:flex; align-items:center; gap:14px; margin-top:12px; padding:14px; background:var(--bg-card); border:2px solid var(--border-color); border-radius:16px; transition:.2s; }
+.profile-preview-card.confirmed { border-color:#22c55e; background:rgba(34,197,94,.10); }
+.profile-preview-card img.ppc-thumb { border-radius:12px !important; border:2px solid var(--border-color) !important; }
+.profile-preview-card img { width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid #fff; background:#0b0f19; flex:0 0 auto; }
+.ppc-name { font-size:16px; font-weight:800; display:flex; align-items:center; gap:6px; letter-spacing:-.2px; }
+.ppc-full { font-size:12px; color:var(--text-dim); }
+.ppc-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:3px; }
+.ppc-followers { font-size:13px; font-weight:700; color:var(--text-dim); }
+.ppc-public { font-size:12px; font-weight:800; color:#22c55e; background:rgba(34,197,94,.14); padding:3px 10px; border-radius:20px; }
+.ppc-status { font-size:13px; color:var(--text-dim); margin-top:10px; display:flex; align-items:center; gap:8px; }
+.ppc-spin { width:14px; height:14px; border:2px solid var(--border-color); border-top-color:var(--dynamic-accent); border-radius:50%; animation:ppc-rot .7s linear infinite; }
+@keyframes ppc-rot { to { transform:rotate(360deg); } }
+.ppc-error { font-size:12px; color:#f9243f; margin-top:8px; }
+.ppc-verified { color:#3897f0; font-size:14px; }
+.ppc-select-btn { width:100%; margin-top:10px; padding:14px; border:none; border-radius:14px; background:var(--dynamic-gradient); color:#fff; font-size:16px; font-weight:800; cursor:pointer; box-shadow:0 6px 20px var(--dynamic-glow); }
+.ppc-change-btn { width:100%; margin-top:10px; padding:13px; border:2px solid var(--dynamic-accent); border-radius:14px; background:transparent; color:var(--dynamic-accent); font-size:15px; font-weight:800; cursor:pointer; }
+.ppc-projection { margin-top:12px; padding:14px; text-align:center; border-radius:14px; background:rgba(34,197,94,.10); border:1px solid rgba(34,197,94,.35); }
+.ppc-projection small { display:block; font-size:13px; font-weight:700; color:#22c55e; opacity:.9; }
+.ppc-projection b { display:block; margin-top:4px; font-size:20px; font-weight:900; color:#16a34a; }
+.upi-secure-line{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:13px;font-weight:700;color:#94a3b8}
+.upi-app-strip{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:12px;padding:14px 12px;border:1px solid rgba(148,163,184,.35);border-radius:16px;background:rgba(255,255,255,.04)}
+.upi-app-tile{width:46px;height:46px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.upi-app-strip img{height:24px;max-width:34px;width:auto;object-fit:contain}
 </style>
 </head>
 <body class="gsm-body">
@@ -105,8 +131,8 @@ body.gsm-body {
 <main class="app-container" id="app"></main>
 
 <script>
-const UPI_ID = "karishmabhoyar7370-1@okicici";
-const MERCHANT_NAME = "Grow Social Media";
+const UPI_ID = "paytm.s21gxhl@pty";
+const MERCHANT_NAME = "Karishma Sagar Bhoyar";
 const TRUST_TAGS = [
   "🔒 No Password",
   "⚡ Fast Delivery",
@@ -172,7 +198,7 @@ const SERVICES = {
     ["1,000 Followers", "Real Active System", 249],["1,500 Followers","Real Active System",349],["2,000 Followers","Real Active System",449],["2,500 Followers","Real Active System",549],["3,000 Followers","Real Active System",649],["3,500 Followers","Real Active System",749],["4,000 Followers","Real Active System",849],["4,500 Followers","Real Active System",949],["5,000 Followers","Real Active System",1049],["5,500 Followers","Real Active System",1149],["6,000 Followers","Real Active System",1249],["6,500 Followers","Real Active System",1349],["7,000 Followers","Real Active System",1449],["7,500 Followers","Real Active System",1549],["8,000 Followers","Real Active System",1649],["8,500 Followers","Real Active System",1749],["9,000 Followers","Real Active System",1849],["9,500 Followers","Real Active System",1949],["10,000 Followers","Real Active System",2049],["20,000 Followers","Real Active System",3999],["30,000 Followers","Real Active System",5899],["40,000 Followers","Real Active System",7799],["50,000 Followers","Bulk Active Optimization",9499,"POPULAR"],["60,000 Followers","Bulk Active Optimization",11399],["70,000 Followers","Bulk Active Optimization",13299],["80,000 Followers","Bulk Active Optimization",15199],["90,000 Followers","Bulk Active Optimization",16999],["1 Lakh (100K) Followers","Elite Scale Optimization",18899],["2 Lakh (200K) Followers","Elite Scale Optimization",36999],["3 Lakh (300K) Followers","Elite Scale Optimization",54999],["4 Lakh (400K) Followers","Elite Scale Optimization",72999],["5 Lakh (500K) Followers","Elite Scale Optimization",89999],["6 Lakh (600K) Followers","Elite Scale Optimization",107999],["7 Lakh (700K) Followers","Elite Scale Optimization",124999],["8 Lakh (800K) Followers","Elite Scale Optimization",142999],["9 Lakh (900K) Followers","Elite Scale Optimization",159999],["10 Lakh (1M) Followers","Full Profile Authority Boost",179999,"MEGA KING PACK"],
   ],
   followers: [
-    ["1,000 Followers","High Quality No Drop",199],["1,500 Followers","High Quality No Drop",299],["2,000 Followers","High Quality No Drop",398],["2,500 Followers","High Quality No Drop",498],["3,000 Followers","High Quality No Drop",597],["3,500 Followers","High Quality No Drop",696],["4,000 Followers","High Quality No Drop",796],["4,500 Followers","High Quality No Drop",895],["5,000 Followers","High Quality No Drop",995],["5,500 Followers","High Quality No Drop",1094],["6,000 Followers","High Quality No Drop",1194],["6,500 Followers","High Quality No Drop",1293],["7,000 Followers","High Quality No Drop",1393],["7,500 Followers","High Quality No Drop",1492],["8,000 Followers","High Quality No Drop",1592],["8,500 Followers","High Quality No Drop",1691],["9,000 Followers","High Quality No Drop",1791],["9,500 Followers","High Quality No Drop",1890],["10,000 Followers","High Quality No Drop",1990],["20,000 Followers","High Quality No Drop",3980],["30,000 Followers","High Quality No Drop",5970],["40,000 Followers","High Quality No Drop",7960],["50,000 Followers","High Quality No Drop",9950,"POPULAR"],["60,000 Followers","High Quality No Drop",11940],["70,000 Followers","High Quality No Drop",13930],["80,000 Followers","High Quality No Drop",15920],["90,000 Followers","High Quality No Drop",17910],["1 Lakh (100K) Followers","Premium Elite Delivery",19900,"CELEB CHOICE"],["2 Lakh (200K) Followers","Premium Elite Delivery",39800],["3 Lakh (300K) Followers","Premium Elite Delivery",59700],["4 Lakh (400K) Followers","Premium Elite Delivery",79600],["5 Lakh (500K) Followers","Premium Elite Delivery",99500],["6 Lakh (600K) Followers","Premium Elite Delivery",119400],["7 Lakh (700K) Followers","Premium Elite Delivery",139300],["8 Lakh (800K) Followers","Premium Elite Delivery",159200],["9 Lakh (900K) Followers","Premium Elite Delivery",179100],["10 Lakh (1M) Followers","Max Server Speed Refill",199000,"ULTIMATE BRAND"],
+    ["1,000 Followers","High Quality",199],["1,500 Followers","High Quality",299],["2,000 Followers","High Quality",398],["2,500 Followers","High Quality",498],["3,000 Followers","High Quality",597],["3,500 Followers","High Quality",696],["4,000 Followers","High Quality",796],["4,500 Followers","High Quality",895],["5,000 Followers","High Quality",995],["5,500 Followers","High Quality",1094],["6,000 Followers","High Quality",1194],["6,500 Followers","High Quality",1293],["7,000 Followers","High Quality",1393],["7,500 Followers","High Quality",1492],["8,000 Followers","High Quality",1592],["8,500 Followers","High Quality",1691],["9,000 Followers","High Quality",1791],["9,500 Followers","High Quality",1890],["10,000 Followers","High Quality",1990],["20,000 Followers","High Quality",3980],["30,000 Followers","High Quality",5970],["40,000 Followers","High Quality",7960],["50,000 Followers","High Quality",9950,"POPULAR"],["60,000 Followers","High Quality",11940],["70,000 Followers","High Quality",13930],["80,000 Followers","High Quality",15920],["90,000 Followers","High Quality",17910],["1 Lakh (100K) Followers","Premium Elite Delivery",19900,"CELEB CHOICE"],["2 Lakh (200K) Followers","Premium Elite Delivery",39800],["3 Lakh (300K) Followers","Premium Elite Delivery",59700],["4 Lakh (400K) Followers","Premium Elite Delivery",79600],["5 Lakh (500K) Followers","Premium Elite Delivery",99500],["6 Lakh (600K) Followers","Premium Elite Delivery",119400],["7 Lakh (700K) Followers","Premium Elite Delivery",139300],["8 Lakh (800K) Followers","Premium Elite Delivery",159200],["9 Lakh (900K) Followers","Premium Elite Delivery",179100],["10 Lakh (1M) Followers","Max Server Speed Refill",199000,"ULTIMATE BRAND"],
   ],
   likes: [
     ["1,000 Likes ❤️","Instant Post Delivery",59,undefined,"SAVE EXTRA ₹10"],["1,500 Likes ❤️","Instant Post Delivery",89,undefined,"SAVE EXTRA ₹15"],["2,000 Likes ❤️","Instant Post Delivery",118,undefined,"SAVE EXTRA ₹20"],["2,500 Likes ❤️","Instant Post Delivery",145,undefined,"SAVE EXTRA ₹25"],["3,000 Likes ❤️","Instant Post Delivery",177,undefined,"SAVE EXTRA ₹30"],["3,500 Likes ❤️","Instant Post Delivery",199,undefined,"SAVE EXTRA ₹40"],["4,000 Likes ❤️","Instant Post Delivery",236,undefined,"SAVE EXTRA ₹45"],["4,500 Likes ❤️","Instant Post Delivery",245,undefined,"SAVE EXTRA ₹50"],["5,000 Likes ❤️","Highly Recommended",249,"HOT","SAVE EXTRA ₹60"],["5,500 Likes ❤️","Premium Speed Engine",279,undefined,"SAVE EXTRA ₹65"],["6,000 Likes ❤️","Premium Speed Engine",299,undefined,"SAVE EXTRA ₹70"],["6,500 Likes ❤️","Premium Speed Engine",329,undefined,"SAVE EXTRA ₹75"],["7,000 Likes ❤️","Premium Speed Engine",349,undefined,"SAVE EXTRA ₹80"],["7,500 Likes ❤️","Premium Speed Engine",379,undefined,"SAVE EXTRA ₹85"],["8,000 Likes ❤️","Premium Speed Engine",399,undefined,"SAVE EXTRA ₹90"],["8,500 Likes ❤️","Premium Speed Engine",429,undefined,"SAVE EXTRA ₹95"],["9,000 Likes ❤️","Premium Speed Engine",449,undefined,"SAVE EXTRA ₹100"],["9,500 Likes ❤️","Premium Speed Engine",479,undefined,"SAVE EXTRA ₹110"],["10,000 Likes ❤️","Premium Speed Engine",499,undefined,"SAVE EXTRA ₹120"],["20,000 Likes ❤️","Instant Heavy Boost",949,undefined,"SAVE EXTRA ₹250"],["30,000 Likes ❤️","Instant Heavy Boost",1399,undefined,"SAVE EXTRA ₹400"],["40,000 Likes ❤️","Instant Heavy Boost",1849,undefined,"SAVE EXTRA ₹550"],["50,000 Likes ❤️","Instant Heavy Boost",2249,"POPULAR","SAVE EXTRA ₹750"],["60,000 Likes ❤️","Instant Heavy Boost",2699,undefined,"SAVE EXTRA ₹900"],["70,000 Likes ❤️","Instant Heavy Boost",3149,undefined,"SAVE EXTRA ₹1,050"],["80,000 Likes ❤️","Instant Heavy Boost",3599,undefined,"SAVE EXTRA ₹1,200"],["90,000 Likes ❤️","Instant Heavy Boost",3999,undefined,"SAVE EXTRA ₹1,400"],["1 Lakh Likes ❤️","Instant Heavy Boost",4500,"VIRAL PACK","SAVE EXTRA ₹1,500"],["2 Lakh Likes ❤️","Mega Engagement Launch",8800,undefined,"SAVE EXTRA ₹3,200"],["3 Lakh Likes ❤️","Mega Engagement Launch",12900,undefined,"SAVE EXTRA ₹5,100"],["4 Lakh Likes ❤️","Mega Engagement Launch",16800,undefined,"SAVE EXTRA ₹7,200"],["5 Lakh Likes ❤️","Mega Engagement Launch",21000,undefined,"SAVE EXTRA ₹9,000"],["6 Lakh Likes ❤️","Mega Engagement Launch",24900,undefined,"SAVE EXTRA ₹11,100"],["7 Lakh Likes ❤️","Mega Engagement Launch",28800,undefined,"SAVE EXTRA ₹13,200"],["8 Lakh Likes ❤️","Mega Engagement Launch",32500,undefined,"SAVE EXTRA ₹15,500"],["9 Lakh Likes ❤️","Mega Engagement Launch",35900,undefined,"SAVE EXTRA ₹18,100"],["1 Million Likes ❤️","Mega Engagement Launch",39000,"TRENDING KING","SAVE EXTRA ₹21,000"],["10 Million Likes ❤️","Full Network Push Delivery",349000,"IMPERIAL GLORY","SAVE EXTRA ₹2,51,000"],
@@ -199,10 +225,277 @@ const FAQS = [
   ["9. Which payment systems are accepted?", "We support all standard Indian UPI network nodes including Google Pay, PhonePe, Paytm App engines directly."],
   ["10. How can I reach user support?", "Simply click the floating WhatsApp button icon or green Helpdesk ribbon element layout anchors to access immediate live support."],
 ];
-const CATEGORY_ORDER = ["fb-followers", "followers", "likes", "views"];
+const CATEGORY_ORDER = ["followers", "likes", "views", "fb-followers"];
 const inr = n => "₹" + Number(n).toLocaleString("en-IN");
 
-const state = { cat: "fb-followers", selected: null, showTerminal: false, mobile: "", target: "", openFaq: null, showAuto: false };
+const API_BASES = [
+  "https://project--a523a349-129b-4873-965b-ca80a89ff863-dev.lovable.app",
+  "https://id-preview--a523a349-129b-4873-965b-ca80a89ff863.lovable.app"
+];
+const state = { cat: "followers", selected: null, showTerminal: false, mobile: "", target: "", openFaq: null, showAuto: false, profile: null, profileLoading: false, profileError: "", profileConfirmed: false, post: null, postLoading: false, postError: "", postConfirmed: false };
+
+let lookupTimer = null, lookupSeq = 0;
+const LOOKUP_CACHE = new Map();
+function platformOf(cat) { return cat === "fb-followers" ? "facebook" : "instagram"; }
+function needsProfile(cat) { return cat === "fb-followers" || cat === "followers"; }
+function needsPost(cat) { return cat === "likes" || cat === "views"; }
+function unitOf(cat) { return cat === "views" ? "Views" : "Likes"; }
+
+function scheduleLookup() {
+  clearTimeout(lookupTimer);
+  const raw = state.target.trim();
+  state.profileConfirmed = false;
+  if (needsPost(state.cat)) {
+    state.postConfirmed = false; state.profile = null; state.profileError = "";
+    if (cleanShortcode(raw).length < 1) {
+      state.post = null; state.postError = ""; state.postLoading = false; renderProfile(); return;
+    }
+    const pkey = "post:" + cleanShortcode(raw);
+    if (POST_CACHE.has(pkey)) {
+      lookupSeq++; state.post = POST_CACHE.get(pkey); state.postError = ""; state.postLoading = false; renderProfile(); return;
+    }
+    state.postLoading = true; state.postError = ""; renderProfile();
+    lookupTimer = setTimeout(() => doPostLookup(raw), 250);
+    return;
+  }
+  state.post = null; state.postError = ""; state.postLoading = false; state.postConfirmed = false;
+  if (!needsProfile(state.cat) || cleanHandle(raw).length < 2) {
+    state.profile = null; state.profileError = ""; state.profileLoading = false;
+    renderProfile();
+    return;
+  }
+  const key = platformOf(state.cat) + ":" + cleanHandle(raw).toLowerCase();
+  if (LOOKUP_CACHE.has(key)) {
+    lookupSeq++;
+    state.profile = LOOKUP_CACHE.get(key); state.profileError = ""; state.profileLoading = false;
+    renderProfile();
+    return;
+  }
+  state.profileLoading = true; state.profileError = ""; renderProfile();
+  lookupTimer = setTimeout(() => doLookup(raw), 220);
+}
+
+function cleanHandle(raw) {
+  let v = (raw || "").trim();
+  if (!v) return "";
+  if (v.indexOf("http") > -1 || v.indexOf("/") > -1) {
+    const m = v.match(/(?:instagram|facebook)\.com\/([^/?#]+)/i);
+    v = m ? m[1] : (v.split("/").filter(Boolean).pop() || v);
+  }
+  return v.replace(/^@/, "").split("?")[0].trim();
+}
+
+function proxyImage(url) {
+  if (!url) return "";
+  return "https://images.weserv.nl/?url=" + encodeURIComponent(url.replace(/^https?:\/\//, "")) + "&w=160&h=160&fit=cover&mask=circle";
+}
+
+// Fallback: public CORS proxies (used if our own API is unreachable)
+async function viaProxy(username) {
+  const target = "https://www.instagram.com/api/v1/users/web_profile_info/?username=" + encodeURIComponent(username);
+  const proxies = [
+    u => "https://corsproxy.io/?" + encodeURIComponent(u),
+    u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+    u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
+  ];
+  for (const mk of proxies) {
+    try {
+      const r = await fetch(mk(target), { headers: { "x-ig-app-id": "936619743392459" } });
+      if (!r.ok) continue;
+      const j = await r.json();
+      const u = j && j.data && j.data.user;
+      if (!u) continue;
+      return {
+        found: true,
+        username: u.username,
+        fullName: u.full_name || "",
+        followers: (u.edge_followed_by && u.edge_followed_by.count) || 0,
+        verified: !!u.is_verified,
+        dp: proxyImage(u.profile_pic_url_hd || u.profile_pic_url),
+      };
+    } catch (e) { continue; }
+  }
+  return null;
+}
+
+async function doLookup(raw) {
+  const seq = ++lookupSeq;
+  const platform = platformOf(state.cat);
+  const uname = cleanHandle(raw);
+  const key = platform + ":" + uname.toLowerCase();
+
+  const hitOne = (base) => fetch(base + "/api/public/profile?platform=" + platform + "&u=" + encodeURIComponent(uname))
+    .then(r => r.ok ? r.json() : null)
+    .then(j => (j && j.found) ? j : Promise.reject(new Error("no")));
+
+  let data = null;
+  try {
+    data = await Promise.any(API_BASES.map(hitOne));
+  } catch (e) { data = null; }
+
+  if (!data && platform === "instagram") { try { data = await viaProxy(uname); } catch (e) {} }
+  if (!data && uname.length > 1) {
+    data = { found: true, username: uname, fullName: "",
+      dp: "https://unavatar.io/" + platform + "/" + encodeURIComponent(uname) + "?fallback=" + encodeURIComponent(fallbackAvatar(uname)) };
+  }
+  if (data) LOOKUP_CACHE.set(key, data);
+  if (seq !== lookupSeq) return;
+  if (data) { state.profile = data; state.profileError = ""; }
+  else { state.profile = null; state.profileError = "Profile not found or temporarily unavailable"; }
+  state.profileLoading = false;
+  renderProfile();
+}
+
+
+const POST_CACHE = new Map();
+function cleanShortcode(raw) {
+  const v = (raw || "").trim();
+  const m = v.match(/instagram\.com\/(?:[^/]+\/)?(?:p|reel|reels|tv)\/([A-Za-z0-9_-]+)/i);
+  if (m) return m[1];
+  const bare = v.replace(/^@/, "").split("?")[0].replace(/\/+$/, "");
+  return /^[A-Za-z0-9_-]{5,20}$/.test(bare) ? bare : "";
+}
+
+async function doPostLookup(raw) {
+  const seq = ++lookupSeq;
+  const code = cleanShortcode(raw);
+  const key = "post:" + code;
+  const hitOne = (base) => fetch(base + "/api/public/post?url=" + encodeURIComponent(raw))
+    .then(r => r.ok ? r.json() : null)
+    .then(j => (j && j.found) ? j : Promise.reject(new Error("no")));
+  let data = null;
+  for (const base of API_BASES) {
+    try {
+      const candidate = await hitOne(base);
+      const exactCount = state.cat === "views" ? candidate.views : candidate.likes;
+      if (typeof exactCount === "number") { data = candidate; break; }
+    } catch (e) { /* try the next live endpoint */ }
+  }
+  if (data) POST_CACHE.set(key, data);
+  if (seq !== lookupSeq) return;
+  if (data) { state.post = data; state.postError = ""; }
+  else { state.post = null; state.postError = state.cat === "views" ? "Exact live views are temporarily unavailable — please retry" : "Post not found — paste a valid public post / reel link"; }
+  state.postLoading = false;
+  renderProfile();
+}
+
+function renderPostBox(box) {
+  box.innerHTML = "";
+  if (state.postLoading) { box.innerHTML = '<div class="ppc-status"><span class="ppc-spin"></span> Verifying post...</div>'; return; }
+  if (state.postError) { box.innerHTML = '<div class="ppc-error">&#9888; ' + state.postError + '</div>'; return; }
+  const p = state.post;
+  if (!p) return;
+  const isViews = state.cat === "views";
+  const unit = unitOf(state.cat);
+  const have = isViews ? p.views : p.likes;
+  const thumb = p.thumb || fallbackAvatar(p.owner || "IG");
+  const countTxt = typeof have === "number"
+    ? Number(have).toLocaleString("en-IN") + " " + unit.toLowerCase()
+    : (isViews ? "Views hidden" : "Likes hidden");
+  const card =
+    '<div class="profile-preview-card' + (state.postConfirmed ? ' confirmed' : '') + '">' +
+      '<img class="ppc-thumb" src="' + thumb + '" alt="post" onerror="this.src=\'' + fallbackAvatar("IG") + '\'"/>' +
+      '<div>' +
+        '<div class="ppc-name">' + (p.owner ? "@" + p.owner : "Post " + (p.shortcode || "")) + '</div>' +
+        '<div class="ppc-meta">' +
+          '<span class="ppc-followers">' + (isViews ? "&#128065; " : "&#10084;&#65039; ") + countTxt + '</span>' +
+          '<span class="ppc-public">' + (p.isReel ? "&#127916; Reel" : "&#128444;&#65039; Post") + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  const btn = state.postConfirmed
+    ? '<button type="button" class="ppc-change-btn" id="ppc-change-post">Change Post</button>'
+    : '<button type="button" class="ppc-select-btn" id="ppc-select-post">Select This Post</button>';
+  let proj = "";
+  const add = packQty(state.selected && state.selected.title);
+  if (state.postConfirmed && add > 0) {
+    const after = typeof have === "number"
+      ? Number(have + add).toLocaleString("en-IN") + " " + unit
+      : "+" + Number(add).toLocaleString("en-IN") + " " + unit;
+    proj = '<div class="ppc-projection"><small>AFTER DELIVERY</small><b>' +
+      (isViews ? "&#128065; " : "&#10084;&#65039; ") + after + '</b></div>';
+  }
+  box.innerHTML = card + btn + proj;
+  const sel = document.getElementById("ppc-select-post");
+  if (sel) sel.onclick = () => {
+    state.postConfirmed = true; renderProfile(); render();
+    requestAnimationFrame(()=>setTimeout(()=>document.getElementById("pay-place-order")?.scrollIntoView({behavior:"smooth", block:"center"}),120));
+  };
+  const ch = document.getElementById("ppc-change-post");
+  if (ch) ch.onclick = () => {
+    state.postConfirmed = false; state.post = null; state.target = "";
+    const inp = document.getElementById("u-target");
+    if (inp) { inp.value = ""; inp.focus(); }
+    renderProfile(); render();
+  };
+}
+
+function packQty(title) {
+  if (!title) return 0;
+  const t = title.toLowerCase();
+  let m = t.match(/([\d.]+)\s*(lakh|million|m\b|k\b)/);
+  if (m) {
+    const n = parseFloat(m[1]);
+    if (m[2].indexOf("lakh") === 0) return n * 100000;
+    if (m[2].indexOf("m") === 0) return n * 1000000;
+    return n * 1000;
+  }
+  m = t.replace(/,/g, "").match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function fallbackAvatar(name) {
+  return "https://ui-avatars.com/api/?name=" + encodeURIComponent(name || "user") + "&background=1e2942&color=fff";
+}
+
+function renderProfile() {
+  const box = document.getElementById("profile-preview");
+  if (!box) return;
+  if (needsPost(state.cat)) { renderPostBox(box); return; }
+  box.innerHTML = "";
+  if (!needsProfile(state.cat)) return;
+  if (state.profileLoading) { box.innerHTML = '<div class="ppc-status"><span class="ppc-spin"></span> Searching profile...</div>'; return; }
+  if (state.profileError) { box.innerHTML = '<div class="ppc-error">&#9888; ' + state.profileError + '</div>'; return; }
+  const p = state.profile;
+  if (!p) return;
+  const dp = p.dp || fallbackAvatar(p.username);
+  const hasF = typeof p.followers === "number";
+  const card =
+    '<div class="profile-preview-card' + (state.profileConfirmed ? ' confirmed' : '') + '">' +
+      '<img src="' + dp + '" alt="' + (p.username || "") + '" onerror="this.src=\'' + fallbackAvatar(p.username) + '\'"/>' +
+      '<div>' +
+        '<div class="ppc-name">@' + (p.username || "") + (p.verified ? '<span class="ppc-verified">&#10004;</span>' : '') + '</div>' +
+        (p.fullName ? '<div class="ppc-full">' + p.fullName + '</div>' : '') +
+        '<div class="ppc-meta">' +
+          (hasF ? '<span class="ppc-followers">' + Number(p.followers).toLocaleString("en-IN") + ' followers</span>' : '<span class="ppc-followers">Profile detected</span>') +
+          '<span class="ppc-public">&#10003; Public</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  const btn = state.profileConfirmed
+    ? '<button type="button" class="ppc-change-btn" id="ppc-change">Change Account</button>'
+    : '<button type="button" class="ppc-select-btn" id="ppc-select">Select This Account</button>';
+
+  let proj = "";
+  const add = packQty(state.selected && state.selected.title);
+  if (hasF && add > 0 && /follow/i.test((state.selected && state.selected.title) || "")) {
+    proj = '<div class="ppc-projection"><small>After order completion</small><b>' +
+      Number(p.followers).toLocaleString("en-IN") + ' &rarr; ' + Number(p.followers + add).toLocaleString("en-IN") + ' followers</b></div>';
+  }
+
+  box.innerHTML = card + btn + proj;
+  const sel = document.getElementById("ppc-select");
+  if (sel) sel.onclick = () => { state.profileConfirmed = true; renderProfile(); render();
+    requestAnimationFrame(()=>setTimeout(()=>document.getElementById("pay-place-order")?.scrollIntoView({behavior:"smooth", block:"center"}),120)); };
+  const ch = document.getElementById("ppc-change");
+  if (ch) ch.onclick = () => {
+    state.profileConfirmed = false; state.profile = null; state.target = "";
+    const inp = document.getElementById("u-target");
+    if (inp) { inp.value = ""; inp.focus(); }
+    renderProfile();
+  };
+}
 
 function setAccent() {
   const a = ACCENTS[state.cat];
@@ -246,7 +539,7 @@ function render() {
   );
   const catTitle = h("div", {class:"section-title-tag"}, h("span", {class:"num-badge"}, "1"), " Choose Service Category");
   const catNav = h("div", {class:"category-navigation"}, ...CATEGORY_ORDER.map(k =>
-    h("button", {class:"nav-tab-btn" + (state.cat===k?" active":""), type:"button", onclick:()=>{ state.cat=k; state.selected=null; state.showTerminal=false; render(); }}, CATEGORY_META[k].navLabel)
+    h("button", {class:"nav-tab-btn" + (state.cat===k?" active":""), type:"button", onclick:()=>{ state.cat=k; state.selected=null; state.showTerminal=false; state.profile=null; state.profileError=""; state.profileConfirmed=false; state.post=null; state.postError=""; state.postConfirmed=false; render(); scheduleLookup(); }}, CATEGORY_META[k].navLabel)
   ));
 
   const grid = h("div", {class:"services-grid-wrapper"}, ...services.map((it, idx) => {
@@ -272,14 +565,15 @@ function render() {
     h("input",{id:"u-mobile", type:"tel", placeholder:"Enter 10-digit number", value: state.mobile, oninput:e=>{ state.mobile=e.target.value; }})
   );
   const targetInput = h("input",{id:"u-target", type:"text", placeholder:"Paste link or type handle username", autocomplete:"off", value:state.target,
-    oninput:e=>{ state.target=e.target.value; state.showAuto=true; renderAuto(); },
+    oninput:e=>{ state.target=e.target.value; state.showAuto=true; renderAuto(); scheduleLookup(); },
     onfocus:()=>{ state.showAuto=true; renderAuto(); },
     onblur:()=>setTimeout(()=>{ state.showAuto=false; renderAuto(); },200)
   });
   const autoWrap = h("div",{id:"auto-wrap"});
+  const previewWrap = h("div",{id:"profile-preview"});
   const g2 = h("div",{class:"form-group", style:"position:relative"},
     h("label",{class:"form-label", for:"u-target"}, meta.fieldLabel),
-    targetInput, autoWrap
+    targetInput, autoWrap, previewWrap
   );
   details.appendChild(g1); details.appendChild(g2);
 
@@ -289,7 +583,7 @@ function render() {
     const matches = (AUTOCOMPLETE_DATA[state.cat]||[]).filter(i => i.toLowerCase().includes(state.target.toLowerCase()));
     if (!matches.length) return;
     const dd = h("div",{class:"autocomplete-dropdown"}, ...matches.map(item =>
-      h("div",{class:"autocomplete-item", onmousedown:()=>{ state.target=item; state.showAuto=false; render(); }}, item)
+      h("div",{class:"autocomplete-item", onmousedown:()=>{ state.target=item; state.showAuto=false; render(); scheduleLookup(); }}, item)
     ));
     autoWrap.appendChild(dd);
   }
@@ -305,7 +599,20 @@ function render() {
   details.appendChild(inv);
 
   if (state.selected && !state.showTerminal) {
-    details.appendChild(h("button",{type:"button", class:"btn-proceed-pay", onclick:proceed}, "Proceed to Pay & Show QR"));
+    const ready = needsPost(state.cat) ? state.postConfirmed : state.profileConfirmed;
+    const label = ready ? "Pay & Place Order" : (needsPost(state.cat) ? "Pay & Place Order" : "Pay & Place Order");
+    const btnPay = h("button",{type:"button", id:"pay-place-order", class:"btn-proceed-pay", onclick: ready ? proceed : null}, label);
+    if (ready) { btnPay.style.background = "linear-gradient(135deg,#00e676,#00b248)"; btnPay.style.color = "#fff"; }
+    else { btnPay.disabled = true; btnPay.style.background = "#9ca3af"; btnPay.style.color = "#f3f4f6"; btnPay.style.boxShadow = "none"; btnPay.style.cursor = "not-allowed"; }
+    details.appendChild(btnPay);
+    const strip = h("div"); strip.innerHTML = `<div class="upi-secure-line"><span>🔒</span><span>Secure UPI Payment</span></div>
+      <div class="upi-app-strip">
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Google_Pay_2018_icon.svg" alt="Google Pay" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#5f259f"><img src="https://cdn.simpleicons.org/phonepe/ffffff" alt="PhonePe" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#00baf2"><img src="https://cdn.simpleicons.org/paytm/ffffff" alt="Paytm" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/UPI-Logo-vector.svg" alt="UPI" loading="lazy"></span>
+      </div>`;
+    while (strip.firstChild) details.appendChild(strip.firstChild);
   }
 
   app.appendChild(trust); app.appendChild(headline); app.appendChild(steps);
@@ -318,30 +625,19 @@ function render() {
     const panel = h("div",{class:"payment-terminal-panel", id:"payment-terminal"});
     panel.innerHTML = `
       <div class="section-title-tag" style="justify-content:center;color:var(--gold);margin-bottom:15px">
-        <span class="num-badge" style="background:black;color:var(--gold)">3</span> Pay Now — Enter UPI PIN
+        <span class="num-badge" style="background:black;color:var(--gold)">3</span> Scan &amp; Pay
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <a href="${upi}" class="btn-proceed-pay" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-top:0;color:white;font-weight:700;padding:12px 8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.25);background:linear-gradient(135deg,#00e676,#00b248)">
-          <span style="background:#fff;border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;justify-content:center;height:26px;min-width:44px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 34" style="height:20px;display:block"><text x="0" y="22" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="22" fill="#097939">U</text><text x="16" y="22" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="22" fill="#ed752e">P</text><text x="32" y="22" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="22" fill="#00458f">I</text><polygon points="42,4 54,4 48,17" fill="#ed752e"/><polygon points="42,30 54,30 48,17" fill="#097939"/></svg></span>
-          <span>Pay via UPI</span>
-        </a>
-        <a href="gpay://upi/pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${s.price}&cu=INR&tn=${encodeURIComponent(s.title)}" class="btn-proceed-pay" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-top:0;color:white;font-weight:700;padding:12px 8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.25);background:linear-gradient(135deg,#4285F4,#1a73e8)">
-          <span style="background:#fff;border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;justify-content:center;height:26px;min-width:44px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" style="height:18px;display:block"><text x="0" y="28" font-family="Arial,sans-serif" font-weight="700" font-size="26" fill="#5f6368">G</text><text x="22" y="28" font-family="Arial,sans-serif" font-weight="500" font-size="22" fill="#4285F4">P</text><text x="38" y="28" font-family="Arial,sans-serif" font-weight="500" font-size="22" fill="#EA4335">a</text><text x="54" y="28" font-family="Arial,sans-serif" font-weight="500" font-size="22" fill="#FBBC04">y</text></svg></span>
-          <span>Google Pay</span>
-        </a>
-        <a href="phonepe://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${s.price}&cu=INR&tn=${encodeURIComponent(s.title)}" class="btn-proceed-pay" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-top:0;color:white;font-weight:700;padding:12px 8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.25);background:linear-gradient(135deg,#6739b7,#4b1e94)">
-          <span style="background:#fff;border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;justify-content:center;height:26px;min-width:44px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30" style="height:18px;display:block"><circle cx="14" cy="15" r="13" fill="#5f259f"/><text x="14" y="20" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="14" fill="#fff">पे</text><text x="32" y="21" font-family="Arial,sans-serif" font-weight="800" font-size="16" fill="#5f259f">PhonePe</text></svg></span>
-          <span>PhonePe</span>
-        </a>
-        <a href="paytmmp://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${s.price}&cu=INR&tn=${encodeURIComponent(s.title)}" class="btn-proceed-pay" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;margin-top:0;color:white;font-weight:700;padding:12px 8px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.25);background:linear-gradient(135deg,#002e6e,#00baf2)">
-          <span style="background:#fff;border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;justify-content:center;height:26px;min-width:44px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 34" style="height:18px;display:block"><text x="0" y="24" font-family="Arial,sans-serif" font-weight="900" font-size="22" fill="#002e6e">Pay</text><text x="42" y="24" font-family="Arial,sans-serif" font-weight="900" font-size="22" fill="#00baf2">tm</text></svg></span>
-          <span>Paytm</span>
-        </a>
-      </div>
-      <p style="font-size:12px;color:var(--text-dim);margin:8px 0">📱 Tap a button above on mobile — or 💻 desktop users scan the QR below with any UPI app.</p>
-      <div style="margin-top:10px;text-align:center;background:#fff;padding:12px;border-radius:12px">
+      <div style="text-align:center;background:#fff;padding:12px;border-radius:12px">
         <div style="font-size:12px;color:#333;font-weight:700;margin-bottom:6px">Scan to Pay</div>
-        <img src="${qr}" alt="UPI QR" style="width:220px;height:220px;display:block;margin:0 auto"/>
+        <img src="${qr}" alt="UPI QR" style="width:230px;height:230px;display:block;margin:0 auto"/>
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin:10px 0 0">Open any UPI app (GPay / PhonePe / Paytm) &rarr; Scan this QR &rarr; pay ${inr(s.price)} and enter your UPI PIN.</p>
+      <div class="upi-secure-line"><span>🔒</span><span>Secure UPI Payment</span></div>
+      <div class="upi-app-strip">
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Google_Pay_2018_icon.svg" alt="Google Pay" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#5f259f"><img src="https://cdn.simpleicons.org/phonepe/ffffff" alt="PhonePe" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#00baf2"><img src="https://cdn.simpleicons.org/paytm/ffffff" alt="Paytm" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/UPI-Logo-vector.svg" alt="UPI" loading="lazy"></span>
       </div>
       <p style="font-size:14px;margin-top:12px;font-weight:700;color:#00e676">Total Payable: <span>${inr(s.price)}</span></p>
     `;
@@ -355,7 +651,7 @@ function render() {
   `;
   app.appendChild(footBadges);
 
-  app.appendChild(h("div",{class:"faq-head-section-title"}, "Frequently Asked Questions"));
+  app.appendChild(h("div",{class:"faq-title-banner"}, h("div",{class:"faq-head-section-title"}, "Frequently Asked Questions"), h("div",{class:"faq-head-section-subtitle"}, "Everything you need to know about our service")));
   const faqBox = h("div",{class:"faq-accordion-box"});
   FAQS.forEach(([q,a],i)=>{
     const open = state.openFaq === i;
@@ -366,6 +662,7 @@ function render() {
     faqBox.appendChild(row);
   });
   app.appendChild(faqBox);
+  renderProfile();
 
   app.appendChild(h("div",{class:"footer-section"}, "© growsocialmedia.in — All rights reserved."));
 }
@@ -376,16 +673,14 @@ function proceed() {
     return;
   }
   if (!state.selected) return;
-  const s = state.selected;
-  const link = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${s.price}&cu=INR&tn=${encodeURIComponent(s.title)}`;
-  const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent);
+  if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
   state.showTerminal = true;
   render();
-  if (isMobile) window.location.href = link;
   requestAnimationFrame(()=>document.getElementById("payment-terminal")?.scrollIntoView({behavior:"smooth"}));
 }
 
 render();
+renderProfile();
 </script>
 </body>
 </html>
