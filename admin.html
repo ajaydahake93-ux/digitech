@@ -10,16 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<script>
-    const user = prompt("Enter Admin Username:");
-    const pass = prompt("Enter Admin Password:");
-    
-    if (user !== "admin" || pass !== "737000") {
-        alert("Wrong Username or Password!");
-        window.location.href = "index.html";
-    }
-</script>
-
     <!-- ==================== 1. ADMIN LOGIN SECTION ==================== -->
     <div id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-600 to-pink-600">
         <div class="bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-6">
@@ -40,9 +30,9 @@
                     <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Password</label>
                     <input type="password" id="loginPass" placeholder="Enter password" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-purple-500 text-sm bg-gray-50">
                 </div>
-                <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-lg text-sm transition">
-                    Login to Dashboard
-                </button>
+<button type="button" onclick="if(document.querySelectorAll('input')[0].value.trim() === 'admin' && document.querySelectorAll('input')[1].value.trim() === '737000') { localStorage.setItem('isAdminLoggedIn', 'true'); document.getElementById('loginSection').style.display = 'none'; document.getElementById('dashboardSection').style.display = 'block'; if(typeof fetchDashboardData === 'function') { fetchDashboardData(); } } else { alert('Wrong Username or Password!'); }" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 text-white font-bold py-3 rounded-xl shadow-lg text-sm transition">
+    Login to Dashboard
+</button>
             </div>
         </div>
     </div>
@@ -170,17 +160,17 @@
             }
         }
 
-        function handleLogin() {
-            let u = document.getElementById('loginUser').value;
-            let p = document.getElementById('loginPass').value;
+function handleLoginDirect() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
 
-            if(u === ADMIN_USER && p === ADMIN_PASS) {
-                localStorage.setItem("isAdminLoggedIn", "true");
-                showDashboard();
-            } else {
-                alert("Wrong Username or Password!");
-            }
-        }
+    if (user === "admin" && pass === "737000") {
+        localStorage.setItem("isAdminLoggedIn", "true");
+        showDashboard();
+    } else {
+        alert("Wrong Username or Password!");
+    }
+}
 
         function showDashboard() {
             document.getElementById('loginSection').classList.add('hidden');
@@ -366,6 +356,28 @@
             navigator.clipboard.writeText(text);
             alert('Copied: ' + text);
         }
-    </script>
+window.onload = function() {
+        if (localStorage.getItem("isAdminLoggedIn") === "true") {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            if (typeof fetchDashboardData === 'function') {
+                fetchDashboardData();
+            }
+        }
+    }
+
+<script>
+function doLogin() {
+    var u = document.getElementById('loginUser').value.trim();
+    var p = document.getElementById('loginPass').value.trim();
+    
+    if (u === "admin" && p === "737000") {
+        localStorage.setItem("isAdminLoggedIn", "true");
+        location.reload();
+    } else {
+        alert("Wrong Username or Password!");
+    }
+}
+</script>
 </body>
 </html>
