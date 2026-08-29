@@ -470,7 +470,7 @@
                                 `<option value="${s}" ${status === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
                         <button onclick="updateOrderStatus('${esc(order.id)}')" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition">Update</button>
-                        <a href="https://wa.me/91${encodeURIComponent(String(order.mobile || order.phone || '').replace(/\D/g, '').slice(-10))}" target="_blank" rel="noopener" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-2.5 rounded-xl text-xs font-bold transition" title="WhatsApp">💬</a>
+                        <a href="https://wa.me/91${encodeURIComponent(String(order.mobile_number || order.mobile || order.phone || '').replace(/\D/g, '').slice(-10))}" target="_blank" rel="noopener" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-2.5 rounded-xl text-xs font-bold transition" title="WhatsApp">💬</a>
                         <button onclick="deleteOrder('${esc(order.id)}')" class="bg-white border border-gray-200 hover:bg-rose-50 hover:text-rose-600 text-gray-500 px-3 py-2.5 rounded-xl text-xs transition" title="Delete">🗑️</button>
                     </div>
                 </div>`;
@@ -505,13 +505,13 @@
 
         function exportCSV() {
             if (!visibleOrders.length) { toast('Nothing to export', false); return; }
-            const head = ['Order ID', 'Service', 'Username', 'Phone', 'Amount', 'Current', 'Order Qty', 'Final', 'Status', 'Date (IST)'];
+            const head = ['Order ID', 'Service', 'Username', 'mobile_number', 'Amount', 'Current', 'Order Qty', 'Final', 'Status', 'Date (IST)'];
             const rows = visibleOrders.map(o => {
                 const current = Number(o.current_followers || 0);
                 const qty = Number(o.order_quantity || o.quantity || 0);
                 return [
                     orderCode(o), o.service_type || o.service_name || '', o.target || o.username || '',
-                    o.mobile || o.phone || '', Number(o.amount || 0), current, qty,
+                    o.mobile_number || o.mobile || o.phone || '', Number(o.amount || 0), current, qty,
                     Number(o.final_followers || current + qty), statusOf(o), istDate(o.created_at)
                 ];
             });
