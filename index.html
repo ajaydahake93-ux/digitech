@@ -392,7 +392,6 @@ function renderPostBox(box) {
   const isViews = state.cat === "views";
   const thumb = p.thumb || fallbackAvatar(p.owner || "IG");
   
-  // जर cat ही views असेल तर live आकडे पूर्णपणे काढून "Reel ready for boost" दाखवणे
   let countHtml = '';
   if (!isViews) {
     const unit = unitOf(state.cat);
@@ -692,45 +691,6 @@ async function proceed() {
     }
     if (!state.selected) return;
     if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
-
-    // मोजलेली संख्या आणि इतर डेटा काढणे
-    const orderedCount = packQty(state.selected.title);
-    
-    let currentCount = 0;
-    if (state.profile && typeof state.profile.followers === "number") {
-        currentCount = state.profile.followers;
-    } else if (state.post && (typeof state.post.likes === "number" || typeof state.post.views === "number")) {
-        currentCount = state.cat === "views" ? state.post.views : state.post.likes;
-    }
-
-    const finalCount = currentCount > 0 ? currentCount + orderedCount : orderedCount;
-    const uniqueOrderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-
-    // Supabase डेटाबेसमध्ये सर्व कॉलम अचूक पाठवणे
-    const { data, error } = await supabaseClient
-        .from('orders')
-        .insert([
-            { 
-                order_id: uniqueOrderId,
-                mobile_number: state.mobile,
-                username: state.target,
-                service_category: CATEGORY_META[state.cat].category,
-                service_name: state.selected.title,
-                order_followers: orderedCount,
-                current_followers: currentCount,
-                final_followers: finalCount,
-                amount: state.selected.price,
-                status: 'Pending'
-            }
-        ]);
-
-    if (error) {
-        console.error('Error saving order:', error.message);
-        alert('Error placing order: ' + error.message);
-        return;
-    } else {
-        console.log('Order saved successfully!', data);
-    }
 
     state.showTerminal = true;
     render();
