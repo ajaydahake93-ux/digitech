@@ -45,7 +45,7 @@
     <div id="dashboardSection" class="hidden min-h-screen pb-12 bg-gray-100">
         <!-- Header -->
         <header class="bg-gradient-to-r from-pink-600 via-fuchsia-600 to-purple-600 text-white shadow-md sticky top-0 z-20">
-            <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center gap-3">
+            <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-3">
                 <h1 class="text-[18px] sm:text-xl font-extrabold flex items-center gap-3 min-w-0 tracking-tight">
                     <span class="bg-white/20 w-10 h-10 rounded-xl flex items-center justify-center text-xl shadow-inner shrink-0">📊</span>
                     <span class="truncate">InstaBoost Admin</span>
@@ -54,10 +54,10 @@
             </div>
         </header>
 
-        <main class="max-w-5xl mx-auto px-3 sm:px-4 py-3 sm:py-5 space-y-5 sm:space-y-6">
+        <main class="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-5 space-y-5 sm:space-y-6">
 
             <!-- EARNINGS -->
-            <section class="grid grid-cols-2 gap-2.5 sm:gap-4">
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
                 <div class="bg-gradient-to-br from-pink-600 to-purple-600 text-white p-4 sm:p-5 rounded-2xl shadow-lg min-h-[112px] sm:min-h-[132px]">
                     <p class="text-[11px] font-bold uppercase tracking-wider opacity-90">Today's Earnings</p>
                     <h3 class="text-[30px] sm:text-3xl font-extrabold mt-2 leading-tight" id="todayEarnings">₹0</h3>
@@ -152,7 +152,7 @@
                 </div>
             </section>
 
-            <!-- ORDERS LIST -->
+            <!-- ORDERS LIST HEADER -->
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <h2 class="text-gray-800 font-bold text-lg">Orders List</h2>
@@ -161,11 +161,37 @@
                 <span class="text-xs font-semibold text-gray-500" id="filteredAmount">₹0</span>
             </div>
 
-            <div id="ordersContainer" class="space-y-4">
-                <div class="bg-white p-6 rounded-2xl shadow-sm text-center text-gray-400">Loading orders...</div>
+            <!-- RESPONSIVE VIEW: CARDS ON MOBILE (md:hidden), TABLE ON PC (hidden md:block) -->
+            <div id="mobileCardsContainer" class="space-y-4 md:hidden">
+                <div class="p-6 text-center text-gray-400 bg-white rounded-2xl shadow-md">Loading orders...</div>
             </div>
 
-            <div class="text-center">
+            <div class="hidden md:block bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-400 text-[11px] uppercase tracking-wider border-b border-gray-100">
+                                <th class="p-4 w-10"><input type="checkbox" class="rounded"></th>
+                                <th class="p-4 w-12">#</th>
+                                <th class="p-4">Order ID</th>
+                                <th class="p-4">Account & Phone</th>
+                                <th class="p-4">Quantity Breakdown</th>
+                                <th class="p-4">Amount</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Date</th>
+                                <th class="p-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody" class="divide-y divide-gray-100 text-sm">
+                            <tr>
+                                <td colspan="9" class="p-6 text-center text-gray-400">Loading orders...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="text-center pt-2">
                 <button id="loadMoreBtn" onclick="loadMore()" class="hidden bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold px-6 py-3 rounded-xl text-sm shadow-sm transition">Load More</button>
             </div>
         </main>
@@ -179,7 +205,7 @@
         const SUPABASE_URL = 'https://uxgmzxurqweabgkmajgq.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_PGpu6urUB3jAsES5tooFrA_mLoqurcE';
         const ADMIN_USER = 'admin';
-        const ADMIN_PASS = 'make2026';
+        const ADMIN_PASS = 'grow2026';
         const PAGE_SIZE = 20;
 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -209,12 +235,33 @@
         function orderCode(o) {
             return o.order_id || o.order_code || ('INSTA' + (o.id || ''));
         }
+        function getOrderQty(o) {
+            return Number(o.order_followers || o.order_quantity || o.quantity || 0);
+        }
+        
+        // Dynamically identify service type (Facebook Followers, Instagram Likes, Views, etc.)
+        function getServiceMeta(o) {
+            const text = ((o.service_type || '') + ' ' + (o.service_name || '') + ' ' + (o.service_category || '')).toLowerCase();
+            if (text.includes('facebook') && text.includes('follower')) {
+                return { name: 'Facebook Followers', label: 'Facebook Followers Breakdown' };
+            } else if (text.includes('facebook')) {
+                return { name: 'Facebook Service', label: 'Facebook Breakdown' };
+            } else if (text.includes('like')) {
+                return { name: 'Likes', label: 'Likes Breakdown' };
+            } else if (text.includes('view')) {
+                return { name: 'Views', label: 'Views Breakdown' };
+            } else if (text.includes('comment')) {
+                return { name: 'Comments', label: 'Comments Breakdown' };
+            }
+            return { name: 'Instagram Followers', label: 'Followers Breakdown' };
+        }
+
         function istDate(value) {
             if (!value) return 'N/A';
             const d = new Date(value);
             if (isNaN(d.getTime())) return 'N/A';
             return d.toLocaleString('en-IN', {
-                timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short',
+                timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', year: 'numeric',
                 hour: '2-digit', minute: '2-digit', hour12: true
             }).replace(',', '') + ' IST';
         }
@@ -222,7 +269,7 @@
             if (!value) return '';
             const d = new Date(value);
             if (isNaN(d.getTime())) return '';
-            return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
+            return d.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
         }
         function todayKeyOffset(days) {
             const d = new Date(Date.now() - days * 86400000);
@@ -289,8 +336,11 @@
 
         /* ================= DATA ================= */
         async function fetchDashboardData() {
-            const container = document.getElementById('ordersContainer');
-            container.innerHTML = '<div class="bg-white p-6 rounded-2xl shadow-sm text-center text-gray-400">Loading orders...</div>';
+            const mobileContainer = document.getElementById('mobileCardsContainer');
+            const tableBody = document.getElementById('ordersTableBody');
+            const loadingHtml = '<div class="p-6 text-center text-gray-400">Loading orders...</div>';
+            mobileContainer.innerHTML = loadingHtml;
+            tableBody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">Loading orders...</td></tr>`;
 
             const { data, error } = await supabaseClient
                 .from('orders')
@@ -299,7 +349,9 @@
 
             if (error) {
                 console.error('Error fetching orders:', error);
-                container.innerHTML = '<div class="bg-white p-6 rounded-2xl shadow-sm text-center text-rose-600 font-semibold">Error loading data. Please refresh.</div>';
+                const errHtml = '<div class="p-6 text-center text-rose-600 font-semibold bg-white rounded-2xl shadow-md">Error loading data. Please refresh.</div>';
+                mobileContainer.innerHTML = errHtml;
+                tableBody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-rose-600 font-semibold">Error loading data. Please refresh.</td></tr>`;
                 return;
             }
 
@@ -357,7 +409,7 @@
                 if (from && (!key || key < from)) return false;
                 if (to && (!key || key > to)) return false;
                 if (q) {
-                    const hay = [o.target, o.username, o.mobile, o.phone, o.id, orderCode(o), o.service_type, o.service_name]
+                    const hay = [o.target, o.username, o.mobile, o.phone, o.id, orderCode(o), o.service_type, o.service_name, o.service_category]
                         .map(v => String(v == null ? '' : v).toLowerCase()).join(' ');
                     if (!hay.includes(q)) return false;
                 }
@@ -383,7 +435,8 @@
 
         /* ================= RENDER ================= */
         function displayOrders() {
-            const container = document.getElementById('ordersContainer');
+            const mobileContainer = document.getElementById('mobileCardsContainer');
+            const tableBody = document.getElementById('ordersTableBody');
             const btn = document.getElementById('loadMoreBtn');
 
             document.getElementById('totalOrdersCount').textContent = visibleOrders.length + ' total';
@@ -391,97 +444,162 @@
                 money(visibleOrders.reduce((s, o) => s + (Number(o.amount) || 0), 0));
 
             if (visibleOrders.length === 0) {
-                container.innerHTML = '<div class="bg-white p-6 rounded-2xl shadow-sm text-center text-gray-400">No orders found.</div>';
+                const emptyHtml = '<div class="p-6 text-center text-gray-400 bg-white rounded-2xl shadow-md">No orders found.</div>';
+                mobileContainer.innerHTML = emptyHtml;
+                tableBody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-gray-400">No orders found.</td></tr>`;
                 btn.classList.add('hidden');
                 return;
             }
 
             const slice = visibleOrders.slice(0, shown);
-            container.innerHTML = slice.map(order => {
+
+            // 1. Render Mobile Cards (md:hidden)
+            mobileContainer.innerHTML = slice.map((order) => {
                 const status = statusOf(order);
-                const service = order.service_type || order.service_name || 'Instagram Followers';
                 const handle = order.target || order.username || 'N/A';
+                const cleanHandle = String(handle).replace(/^@/, '');
+                const phone = order.mobile_number || order.mobile || order.phone || 'N/A';
                 const code = orderCode(order);
                 const current = Number(order.current_followers || 0);
-                const qty = Number(order.order_quantity || order.quantity || 0);
+                const qty = getOrderQty(order);
                 const final = Number(order.final_followers || (current + qty));
+                const serviceMeta = getServiceMeta(order);
+                const serviceLabelText = order.service_type || order.service_name || order.service_category || serviceMeta.name;
 
                 return `
-                <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
-                    <div class="bg-gray-50 p-4 border-b border-gray-100">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="min-w-0">
-                                <span class="inline-block bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wide">${esc(service)}</span>
-                                <h3 class="mt-1.5 truncate">
-                                    <a href="https://instagram.com/${encodeURIComponent(String(handle).replace(/^@/, ''))}" target="_blank" rel="noopener noreferrer"
-                                       title="Open Instagram profile"
-                                       class="text-pink-600 font-extrabold text-base underline decoration-pink-300 hover:text-pink-700">@${esc(String(handle).replace(/^@/, ''))}</a>
-                                    <button onclick="copyText('${esc(String(handle).replace(/^@/, ''))}')" title="Copy username" class="ml-1 text-xs text-gray-400 hover:text-gray-700 align-middle">📋</button>
-                                </h3>
+                <div class="bg-white rounded-2xl shadow-md border border-gray-100 p-4 space-y-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span class="inline-block bg-purple-50 text-purple-700 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md mb-1">${esc(serviceLabelText)}</span>
+                            <div>
+                                <a href="https://instagram.com/${encodeURIComponent(cleanHandle)}" target="_blank" rel="noopener noreferrer"
+                                   class="text-pink-600 font-extrabold text-lg hover:underline">@${esc(cleanHandle)}</a>
+                                <button onclick="copyText('${esc(cleanHandle)}')" title="Copy username" class="text-xs text-gray-400 hover:text-gray-600 ml-1">📋</button>
                             </div>
-                            <span class="shrink-0 px-3 py-1 text-[11px] rounded-full font-bold ${statusClasses(status)}">• ${esc(status)}</span>
                         </div>
-                        <button onclick="copyText('${esc(code)}')" title="Click to copy Order ID" class="mt-3 flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-xs font-mono font-semibold text-gray-700 hover:bg-gray-50 hover:border-pink-300 cursor-pointer transition">
+                        <span class="px-3 py-1 text-xs rounded-full font-bold shrink-0 ${statusClasses(status)}">• ${esc(status)}</span>
+                    </div>
+
+                    <div>
+                        <button onclick="copyText('${esc(code)}')" title="Click to copy Order ID" class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-2.5 py-1 rounded-lg text-xs font-mono font-semibold text-gray-700 hover:bg-gray-100 transition">
                             #${esc(code)} <span>📋</span>
                         </button>
                     </div>
 
-                    <div class="p-4 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Phone</p>
-                                <p class="text-sm font-extrabold text-gray-900 mt-0.5">${esc(order.mobile || order.phone || 'N/A')}</p>
-                            </div>
-                            <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Amount</p>
-                                <p class="text-sm font-extrabold text-emerald-600 mt-0.5">${money(order.amount)}</p>
-                            </div>
-                        </div>
+                    <hr class="border-gray-100">
 
+                    <div class="grid grid-cols-2 gap-4 text-xs">
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">Followers Breakdown</p>
-                            <div class="bg-gray-50 rounded-xl p-3 flex items-center justify-center gap-2 sm:gap-3">
-                                <div class="text-center px-1">
-                                    <p class="text-lg font-extrabold text-gray-900 leading-none">${num(current)}</p>
-                                    <p class="text-[10px] text-gray-500 font-bold uppercase mt-1">Current</p>
-                                </div>
-                                <span class="text-gray-800 font-extrabold">+</span>
-                                <div class="text-center bg-pink-100 rounded-lg px-3 py-2">
-                                    <p class="text-lg font-extrabold text-pink-600 leading-none">${num(qty)}</p>
-                                    <p class="text-[10px] text-gray-500 font-bold uppercase mt-1">Order</p>
-                                </div>
-                                <span class="text-gray-800 font-extrabold">=</span>
-                                <div class="text-center bg-emerald-100 rounded-lg px-3 py-2">
-                                    <p class="text-lg font-extrabold text-emerald-600 leading-none">${num(final)}</p>
-                                    <p class="text-[10px] text-gray-500 font-bold uppercase mt-1">Final</p>
-                                </div>
-                            </div>
+                            <span class="text-gray-400 font-bold uppercase tracking-wider block text-[10px]">Phone</span>
+                            <span class="text-gray-900 font-bold text-sm mt-0.5 block">${esc(phone)}</span>
                         </div>
-
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Date</p>
-                            <p class="text-sm font-extrabold text-gray-900 mt-0.5">${esc(istDate(order.created_at))}</p>
+                            <span class="text-gray-400 font-bold uppercase tracking-wider block text-[10px]">Amount</span>
+                            <span class="text-emerald-600 font-extrabold text-base mt-0.5 block">${money(order.amount)}</span>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2 p-4 border-t border-gray-100 bg-gray-50">
-                        <select id="status_${esc(order.id)}" class="flex-1 p-2.5 border border-gray-200 rounded-xl text-xs font-bold outline-none bg-white">
-                            ${['Pending', 'In Progress', 'Completed', 'Failed'].map(s =>
-                                `<option value="${s}" ${status === s ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                        <button onclick="updateOrderStatus('${esc(order.id)}')" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition">Update</button>
-                        <a href="https://wa.me/91${encodeURIComponent(String(order.mobile_number || order.mobile || order.phone || '').replace(/\D/g, '').slice(-10))}" target="_blank" rel="noopener" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-2.5 rounded-xl text-xs font-bold transition" title="WhatsApp">💬</a>
-                        <button onclick="deleteOrder('${esc(order.id)}')" class="bg-white border border-gray-200 hover:bg-rose-50 hover:text-rose-600 text-gray-500 px-3 py-2.5 rounded-xl text-xs transition" title="Delete">🗑️</button>
+                    <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 space-y-2">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">${esc(serviceMeta.label)}</span>
+                        <div class="flex items-center justify-between text-xs font-semibold">
+                            <div class="bg-white px-3 py-2 rounded-lg border border-gray-200 text-center flex-1">
+                                <span class="text-gray-400 text-[10px] block uppercase font-bold">Current</span>
+                                <span class="text-gray-800 font-bold text-sm">${num(current)}</span>
+                            </div>
+                            <span class="text-gray-400 font-bold px-2">+</span>
+                            <div class="bg-pink-50 px-3 py-2 rounded-lg border border-pink-100 text-center flex-1">
+                                <span class="text-pink-400 text-[10px] block uppercase font-bold">Order</span>
+                                <span class="text-pink-600 font-bold text-sm">+${num(qty)}</span>
+                            </div>
+                            <span class="text-gray-400 font-bold px-2">=</span>
+                            <div class="bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100 text-center flex-1">
+                                <span class="text-emerald-500 text-[10px] block uppercase font-bold">Final</span>
+                                <span class="text-emerald-600 font-bold text-sm">${num(final)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+                        <div class="text-xs text-gray-500">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Date</span>
+                            <span class="font-medium">${esc(istDate(order.created_at))}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="status_m_${esc(order.id)}" class="p-2 border border-gray-200 rounded-xl text-xs font-bold outline-none bg-white flex-1">
+                                ${['Pending', 'In Progress', 'Completed', 'Failed'].map(s =>
+                                    `<option value="${s}" ${status === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                            <button onclick="updateOrderStatus('${esc(order.id)}', 'm')" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">Update</button>
+                            <button onclick="deleteOrder('${esc(order.id)}')" class="bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 p-2.5 rounded-xl text-xs transition" title="Delete">🗑️</button>
+                        </div>
                     </div>
                 </div>`;
+            }).join('');
+
+            // 2. Render PC Table (hidden md:block) - Dynamically showing service name in header & breakdown
+            tableBody.innerHTML = slice.map((order, index) => {
+                const status = statusOf(order);
+                const handle = order.target || order.username || 'N/A';
+                const cleanHandle = String(handle).replace(/^@/, '');
+                const phone = order.mobile_number || order.mobile || order.phone || 'N/A';
+                const code = orderCode(order);
+                const current = Number(order.current_followers || 0);
+                const qty = getOrderQty(order);
+                const final = Number(order.final_followers || (current + qty));
+                const serviceMeta = getServiceMeta(order);
+                const serviceLabelText = order.service_type || order.service_name || order.service_category || serviceMeta.name;
+
+                return `
+                <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                    <td class="p-4"><input type="checkbox" class="rounded"></td>
+                    <td class="p-4 text-xs font-semibold text-gray-500">${index + 1}</td>
+                    <td class="p-4">
+                        <button onclick="copyText('${esc(code)}')" title="Click to copy Order ID" class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 px-2 py-1 rounded-md text-xs font-mono font-semibold text-gray-700 hover:bg-gray-100 transition">
+                            #${esc(code)} <span>📋</span>
+                        </button>
+                    </td>
+                    <td class="p-4">
+                        <span class="inline-block bg-purple-50 text-purple-700 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded mb-0.5">${esc(serviceLabelText)}</span>
+                        <div>
+                            <a href="https://instagram.com/${encodeURIComponent(cleanHandle)}" target="_blank" rel="noopener noreferrer"
+                               class="text-pink-600 font-extrabold text-sm hover:underline">@${esc(cleanHandle)}</a>
+                            <button onclick="copyText('${esc(cleanHandle)}')" title="Copy username" class="text-[10px] text-gray-400 hover:text-gray-600 ml-1">📋</button>
+                        </div>
+                        <div class="text-xs text-gray-500 font-medium mt-0.5 flex items-center gap-1.5">
+                            <span>📞 ${esc(phone)}</span>
+                            ${phone !== 'N/A' ? `<a href="https://wa.me/91${encodeURIComponent(String(phone).replace(/\D/g, '').slice(-10))}" target="_blank" rel="noopener" class="text-emerald-600 hover:underline text-[11px] font-bold">💬 Chat</a>` : ''}
+                        </div>
+                    </td>
+                    <td class="p-4 text-xs text-gray-600">
+                        <div class="font-bold text-purple-700 text-[11px] mb-1 uppercase tracking-wider">${esc(serviceMeta.name)}</div>
+                        <div class="space-y-0.5">
+                            <div class="text-gray-400">Current: <span class="text-gray-700 font-medium">${num(current)}</span></div>
+                            <div class="text-pink-600 font-bold">Order: +${num(qty)}</div>
+                            <div class="text-gray-400">Final: <span class="text-gray-700 font-medium">${num(final)}</span></div>
+                        </div>
+                    </td>
+                    <td class="p-4 font-extrabold text-emerald-600">${money(order.amount)}</td>
+                    <td class="p-4"><span class="px-2.5 py-1 text-[11px] rounded-full font-bold ${statusClasses(status)}">• ${esc(status)}</span></td>
+                    <td class="p-4 text-xs text-gray-500 whitespace-nowrap">${esc(istDate(order.created_at))}</td>
+                    <td class="p-4">
+                        <div class="flex items-center justify-center gap-2">
+                            <select id="status_pc_${esc(order.id)}" class="p-1.5 border border-gray-200 rounded-lg text-xs font-bold outline-none bg-white">
+                                ${['Pending', 'In Progress', 'Completed', 'Failed'].map(s =>
+                                    `<option value="${s}" ${status === s ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
+                            <button onclick="updateOrderStatus('${esc(order.id)}', 'pc')" class="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Update</button>
+                            <button onclick="deleteOrder('${esc(order.id)}')" class="bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 p-2 rounded-lg text-xs transition" title="Delete">🗑️</button>
+                        </div>
+                    </td>
+                </tr>`;
             }).join('');
 
             btn.classList.toggle('hidden', visibleOrders.length <= shown);
         }
 
         /* ================= ACTIONS ================= */
-        async function updateOrderStatus(id) {
-            const sel = document.getElementById('status_' + id);
+        async function updateOrderStatus(id, mode) {
+            const sel = document.getElementById(mode === 'm' ? 'status_m_' + id : 'status_pc_' + id);
             if (!sel) return;
             const newStatus = sel.value;
             const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', id);
@@ -508,7 +626,7 @@
             const head = ['Order ID', 'Service', 'Username', 'mobile_number', 'Amount', 'Current', 'Order Qty', 'Final', 'Status', 'Date (IST)'];
             const rows = visibleOrders.map(o => {
                 const current = Number(o.current_followers || 0);
-                const qty = Number(o.order_quantity || o.quantity || 0);
+                const qty = getOrderQty(o);
                 return [
                     orderCode(o), o.service_type || o.service_name || '', o.target || o.username || '',
                     o.mobile_number || o.mobile || o.phone || '', Number(o.amount || 0), current, qty,

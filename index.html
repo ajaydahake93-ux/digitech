@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Supabase JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Buy Instagram Followers | Grow Social Media Agency | Best SMM Panel</title>
@@ -131,6 +133,10 @@ body.gsm-body {
 <main class="app-container" id="app"></main>
 
 <script>
+        const SUPABASE_URL = 'https://uxgmzxurqweabgkmajgq.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_PGpu6urUB3jAsES5tooFrA_mLoqurcE';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const UPI_ID = "paytm.s21gxhl@pty";
 const MERCHANT_NAME = "Karishma Sagar Bhoyar";
 const TRUST_TAGS = [
@@ -143,29 +149,29 @@ const TRUST_TAGS = [
 ];
 const CATEGORY_META = {
   "fb-followers": {
-    navLabel: "🔵 FB FOLLOWERS",
-    category: "FB Followers",
+    navLabel: "🔵 Facebook Followers",
+    category:     "Facebook Followers",
     head: "Get Real Facebook Followers",
     sub: "Fast, safe, and no password required. Works for both profiles and pages.",
     fieldLabel: "🔵 Facebook Profile or Page Link / Username",
   },
   followers: {
-    navLabel: "👤 INS FOLLOWERS",
-    category: "Instagram Followers",
+    navLabel: "👤 Intagram Followers",
+    category:     "Instagram Followers",
     head: "Get Real Instagram Followers",
     sub: "Grow your presence with zero password drop refill protections.",
     fieldLabel: "👤 Instagram Profile Username / Link",
   },
   likes: {
-    navLabel: "👍 INS LIKES",
-    category: "Instagram Likes",
+    navLabel: "👍 Intagram Likes",
+    category:     "Instagram Likes",
     head: "Get Instant Instagram Likes",
     sub: "Boost engagements instantly on your posts and trending reels.",
     fieldLabel: "👍 Instagram Post or Reel Link",
   },
   views: {
-    navLabel: "👁️ INS VIEWS",
-    category: "Instagram Views",
+    navLabel: "👁️ Intagram Views",
+    category:     "Instagram Views",
     head: "Get Viral Instagram Views",
     sub: "Get views instantly to trigger the viral algorithm.",
     fieldLabel: "👁️ Instagram Reel Video Link",
@@ -290,7 +296,6 @@ function proxyImage(url) {
   return "https://images.weserv.nl/?url=" + encodeURIComponent(url.replace(/^https?:\/\//, "")) + "&w=160&h=160&fit=cover&mask=circle";
 }
 
-// Fallback: public CORS proxies (used if our own API is unreachable)
 async function viaProxy(username) {
   const target = "https://www.instagram.com/api/v1/users/web_profile_info/?username=" + encodeURIComponent(username);
   const proxies = [
@@ -346,7 +351,6 @@ async function doLookup(raw) {
   renderProfile();
 }
 
-
 const POST_CACHE = new Map();
 function cleanShortcode(raw) {
   const v = (raw || "").trim();
@@ -369,7 +373,7 @@ async function doPostLookup(raw) {
       const candidate = await hitOne(base);
       const exactCount = state.cat === "views" ? candidate.views : candidate.likes;
       if (typeof exactCount === "number") { data = candidate; break; }
-    } catch (e) { /* try the next live endpoint */ }
+    } catch (e) { }
   }
   if (data) POST_CACHE.set(key, data);
   if (seq !== lookupSeq) return;
@@ -600,7 +604,7 @@ function render() {
 
   if (state.selected && !state.showTerminal) {
     const ready = needsPost(state.cat) ? state.postConfirmed : state.profileConfirmed;
-    const label = ready ? "Pay & Place Order" : (needsPost(state.cat) ? "Pay & Place Order" : "Pay & Place Order");
+    const label = "Pay & Place Order";
     const btnPay = h("button",{type:"button", id:"pay-place-order", class:"btn-proceed-pay", onclick: ready ? proceed : null}, label);
     if (ready) { btnPay.style.background = "linear-gradient(135deg,#00e676,#00b248)"; btnPay.style.color = "#fff"; }
     else { btnPay.disabled = true; btnPay.style.background = "#9ca3af"; btnPay.style.color = "#f3f4f6"; btnPay.style.boxShadow = "none"; btnPay.style.cursor = "not-allowed"; }
@@ -667,16 +671,56 @@ function render() {
   app.appendChild(h("div",{class:"footer-section"}, "© growsocialmedia.in — All rights reserved."));
 }
 
-function proceed() {
-  if (!state.mobile.trim() || !state.target.trim()) {
-    alert("Please complete mobile number and target handle details fields.");
-    return;
-  }
-  if (!state.selected) return;
-  if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
-  state.showTerminal = true;
-  render();
-  requestAnimationFrame(()=>document.getElementById("payment-terminal")?.scrollIntoView({behavior:"smooth"}));
+async function proceed() {
+    if (!state.mobile.trim() || !state.target.trim()) {
+        alert("Please complete mobile number and target handle details fields.");
+        return;
+    }
+    if (!state.selected) return;
+    if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
+
+    // मोजलेली संख्या आणि इतर डेटा काढणे
+    const orderedCount = packQty(state.selected.title);
+    
+    let currentCount = 0;
+    if (state.profile && typeof state.profile.followers === "number") {
+        currentCount = state.profile.followers;
+    } else if (state.post && (typeof state.post.likes === "number" || typeof state.post.views === "number")) {
+        currentCount = state.cat === "views" ? state.post.views : state.post.likes;
+    }
+
+    const finalCount = currentCount > 0 ? currentCount + orderedCount : orderedCount;
+    const uniqueOrderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+
+    // Supabase डेटाबेसमध्ये सर्व कॉलम अचूक पाठवणे
+    const { data, error } = await supabaseClient
+        .from('orders')
+        .insert([
+            { 
+                order_id: uniqueOrderId,
+                mobile_number: state.mobile,
+                username: state.target,
+                service_category: CATEGORY_META[state.cat].category,
+                service_name: state.selected.title,
+                order_followers: orderedCount,
+                current_followers: currentCount,
+                final_followers: finalCount,
+                amount: state.selected.price,
+                status: 'Pending'
+            }
+        ]);
+
+    if (error) {
+        console.error('Error saving order:', error.message);
+        alert('Error placing order: ' + error.message);
+        return;
+    } else {
+        console.log('Order saved successfully!', data);
+    }
+
+    state.showTerminal = true;
+    render();
+    requestAnimationFrame(()=>document.getElementById("payment-terminal")?.scrollIntoView({behavior:"smooth"}));
 }
 
 render();
