@@ -390,19 +390,28 @@ function renderPostBox(box) {
   const p = state.post;
   if (!p) return;
   const isViews = state.cat === "views";
-  const unit = unitOf(state.cat);
-  const have = isViews ? p.views : p.likes;
   const thumb = p.thumb || fallbackAvatar(p.owner || "IG");
-  const countTxt = typeof have === "number"
-    ? Number(have).toLocaleString("en-IN") + " " + unit.toLowerCase()
-    : (isViews ? "Views hidden" : "Likes hidden");
+  
+  // जर cat ही views असेल तर live आकडे पूर्णपणे काढून "Reel ready for boost" दाखवणे
+  let countHtml = '';
+  if (!isViews) {
+    const unit = unitOf(state.cat);
+    const have = p.likes;
+    const countTxt = typeof have === "number"
+      ? Number(have).toLocaleString("en-IN") + " " + unit.toLowerCase()
+      : "Likes hidden";
+    countHtml = '<span class="ppc-followers">&#10084;&#65039; ' + countTxt + '</span>';
+  } else {
+    countHtml = '<span class="ppc-followers" style="color: var(--neon-green); font-weight: 800;">Reel ready for boost</span>';
+  }
+
   const card =
     '<div class="profile-preview-card' + (state.postConfirmed ? ' confirmed' : '') + '">' +
       '<img class="ppc-thumb" src="' + thumb + '" alt="post" onerror="this.src=\'' + fallbackAvatar("IG") + '\'"/>' +
       '<div>' +
         '<div class="ppc-name">' + (p.owner ? "@" + p.owner : "Post " + (p.shortcode || "")) + '</div>' +
         '<div class="ppc-meta">' +
-          '<span class="ppc-followers">' + (isViews ? "&#128065; " : "&#10084;&#65039; ") + countTxt + '</span>' +
+          countHtml +
           '<span class="ppc-public">' + (p.isReel ? "&#127916; Reel" : "&#128444;&#65039; Post") + '</span>' +
         '</div>' +
       '</div>' +
@@ -413,11 +422,16 @@ function renderPostBox(box) {
   let proj = "";
   const add = packQty(state.selected && state.selected.title);
   if (state.postConfirmed && add > 0) {
-    const after = typeof have === "number"
-      ? Number(have + add).toLocaleString("en-IN") + " " + unit
-      : "+" + Number(add).toLocaleString("en-IN") + " " + unit;
-    proj = '<div class="ppc-projection"><small>AFTER DELIVERY</small><b>' +
-      (isViews ? "&#128065; " : "&#10084;&#65039; ") + after + '</b></div>';
+    if (!isViews) {
+      const have = p.likes;
+      const unit = unitOf(state.cat);
+      const after = typeof have === "number"
+        ? Number(have + add).toLocaleString("en-IN") + " " + unit
+        : "+" + Number(add).toLocaleString("en-IN") + " " + unit;
+      proj = '<div class="ppc-projection"><small>AFTER DELIVERY</small><b>&#10084;&#65039; ' + after + '</b></div>';
+    } else {
+      proj = '<div class="ppc-projection"><small>AFTER DELIVERY</small><b>Reel ready for boost</b></div>';
+    }
   }
   box.innerHTML = card + btn + proj;
   const sel = document.getElementById("ppc-select-post");
