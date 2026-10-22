@@ -66,6 +66,7 @@ body.gsm-body {
 .invoice-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; color: var(--text-dim); }
 .invoice-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: var(--gold); border-top: 1px solid var(--border-color); padding-top: 6px; margin-top: 6px; }
 .btn-proceed-pay { background: linear-gradient(135deg, #ffd700, #ffa500); color: black; border: none; padding: 14px; border-radius: 8px; font-weight: 800; width: 100%; cursor: pointer; font-size: 15px; margin-top: 15px; text-align: center; box-shadow: 0 4px 15px rgba(255,215,0,0.3); }
+.payment-terminal-panel { background: var(--bg-surface); border: 2px solid var(--gold); border-radius: 12px; padding: 20px 15px; margin-top: 25px; text-align: center; }
 .badge-footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 25px; }
 .footer-badge-item { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; }
 .faq-title-banner { margin:35px 0 12px; padding:24px 16px; border-radius:12px 12px 0 0; text-align:center; color:#fff; background:linear-gradient(135deg,#00796b,#0097a7); box-shadow:0 8px 24px rgba(0,151,167,.2); }
@@ -79,6 +80,7 @@ body.gsm-body {
 .faq-body-content.open { padding: 0 14px 4px 14px; max-height: 400px; }
 .faq-body-content p { margin: 10px 0; }
 
+/* Custom Bottom Footer Section */
 .custom-site-footer { margin-top: 40px; padding: 30px 15px 20px; border-top: 1px solid var(--border-color); background: #070a12; text-align: center; }
 .footer-links-row { display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
 .footer-links-row a { color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 700; transition: color 0.2s; cursor: pointer; }
@@ -87,6 +89,7 @@ body.gsm-body {
 .footer-copyright-text { font-size: 13px; color: #94a3b8; font-weight: 600; margin-bottom: 6px; }
 .footer-disclaimer-text { font-size: 11px; color: #64748b; font-weight: 500; }
 
+/* Modal Styling for Policy Pages */
 .policy-modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 15px; }
 .policy-modal.active { display: flex; }
 .policy-content-box { background: #0f172a; border: 1px solid var(--border-color); width: 100%; max-width: 520px; border-radius: 16px; padding: 20px; max-height: 85vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.7); color: #cbd5e1; font-size: 13px; line-height: 1.5; }
@@ -151,6 +154,7 @@ body.gsm-body {
 </a>
 <main class="app-container" id="app"></main>
 
+<!-- Policy Modal Popups -->
 <div id="policyModal" class="policy-modal">
   <div class="policy-content-box">
     <div id="modalHeader" class="policy-header-banner">Title</div>
@@ -164,6 +168,8 @@ const SUPABASE_URL = 'https://uxgmzxurqweabgkmajgq.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_PGpu6urUB3jAsES5tooFrA_mLoqurcE';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const UPI_ID = "paytm.s21gxhl@pty";
+const MERCHANT_NAME = "Karishma Sagar Bhoyar";
 const TRUST_TAGS = [
   "🔒 No Password",
   "⚡ Fast Delivery",
@@ -393,7 +399,7 @@ const API_BASES = [
   "https://id-preview--a523a349-129b-4873-965b-ca80a89ff863.lovable.app"
 ];
 
-const state = { cat: "ig-likes", selected: null, mobile: "", target: "", openFaq: null, showAuto: false, profile: null, profileLoading: false, profileError: "", profileConfirmed: false, post: null, postLoading: false, postError: "", postConfirmed: false };
+const state = { cat: "ig-likes", selected: null, showTerminal: false, mobile: "", target: "", openFaq: null, showAuto: false, profile: null, profileLoading: false, profileError: "", profileConfirmed: false, post: null, postLoading: false, postError: "", postConfirmed: false };
 
 let lookupTimer = null, lookupSeq = 0;
 const LOOKUP_CACHE = new Map();
@@ -716,12 +722,12 @@ function render() {
     h("div", {class:"step-connector"}),
     h("div", {class:"step-circle" + (state.selected?" active":"")}, "2"),
     h("div", {class:"step-connector"}),
-    h("div", {class:"step-circle"}, "3"),
+    h("div", {class:"step-circle" + (state.showTerminal?" active":"")}, "3"),
   );
   const catTitle = h("div", {class:"section-title-tag"}, h("span", {class:"num-badge"}, "1"), " Choose Service Category");
   const catNav = h("div", {class:"category-navigation"}, ...CATEGORY_ORDER.map(k =>
     h("button", {class:"nav-tab-btn" + (state.cat===k?" active":""), type:"button", onclick:()=>{ 
-      state.cat=k; state.selected=null; state.profile=null; state.profileError=""; state.profileConfirmed=false; state.post=null; state.postError=""; state.postConfirmed=false; render(); scheduleLookup(); 
+      state.cat=k; state.selected=null; state.showTerminal=false; state.profile=null; state.profileError=""; state.profileConfirmed=false; state.post=null; state.postError=""; state.postConfirmed=false; render(); scheduleLookup(); 
     }}, CATEGORY_META[k].navLabel)
   ));
 
@@ -729,7 +735,7 @@ function render() {
     const [title, sub, price, tag, orig, save] = it;
     const sel = state.selected && state.selected.idx === idx;
     return h("div", {class:"service-card"+(sel?" selected":""), onclick:()=>{
-      state.selected = {idx, title, price}; render();
+      state.selected = {idx, title, price}; state.showTerminal=false; render();
       requestAnimationFrame(()=>{ document.getElementById("details-section")?.scrollIntoView({behavior:"smooth"}); setTimeout(()=>document.getElementById("u-mobile")?.focus(),400); });
     }},
       h("div", {class:"service-info"},
@@ -781,7 +787,7 @@ function render() {
   );
   details.appendChild(inv);
 
-  if (state.selected) {
+  if (state.selected && !state.showTerminal) {
     const ready = needsPost(state.cat) ? state.postConfirmed : state.profileConfirmed;
     const label = "Pay & Place Order";
     const btnPay = h("button",{type:"button", id:"pay-place-order", class:"btn-proceed-pay", onclick: ready ? proceed : null}, label);
@@ -800,6 +806,32 @@ function render() {
 
   app.appendChild(trust); app.appendChild(headline); app.appendChild(steps);
   app.appendChild(catTitle); app.appendChild(catNav); app.appendChild(grid); app.appendChild(details);
+
+  if (state.showTerminal && state.selected) {
+    const s = state.selected;
+    const upi = `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(MERCHANT_NAME)}&am=${s.price}&cu=INR&tn=${encodeURIComponent(s.title)}`;
+    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upi)}`;
+    const panel = h("div",{class:"payment-terminal-panel", id:"payment-terminal"});
+    panel.innerHTML = `
+      <div class="section-title-tag" style="justify-content:center;color:var(--gold);margin-bottom:15px">
+        <span class="num-badge" style="background:black;color:var(--gold)">3</span> Scan &amp; Pay
+      </div>
+      <div style="text-align:center;background:#fff;padding:12px;border-radius:12px">
+        <div style="font-size:12px;color:#333;font-weight:700;margin-bottom:6px">Scan to Pay</div>
+        <img src="${qr}" alt="UPI QR" style="width:230px;height:230px;display:block;margin:0 auto"/>
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin:10px 0 0">Open any UPI app (GPay / PhonePe / Paytm) &rarr; Scan this QR &rarr; pay ${inr(s.price)} and enter your UPI PIN.</p>
+      <div class="upi-secure-line"><span>🔒</span><span>Secure UPI Payment</span></div>
+      <div class="upi-app-strip">
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Google_Pay_2018_icon.svg" alt="Google Pay" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#5f259f"><img src="https://cdn.simpleicons.org/phonepe/ffffff" alt="PhonePe" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#00baf2"><img src="https://cdn.simpleicons.org/paytm/ffffff" alt="Paytm" loading="lazy"></span>
+        <span class="upi-app-tile" style="background:#ffffff"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/UPI-Logo-vector.svg" alt="UPI" loading="lazy"></span>
+      </div>
+      <p style="font-size:14px;margin-top:12px;font-weight:700;color:#00e676">Total Payable: <span>${inr(s.price)}</span></p>
+    `;
+    app.appendChild(panel);
+  }
 
   const footBadges = h("div",{class:"badge-footer-grid"});
   footBadges.innerHTML = `
@@ -820,6 +852,7 @@ function render() {
   });
   app.appendChild(faqBox);
 
+  // Bottom Footer with exact policy popups
   const siteFooter = h("footer", {class: "custom-site-footer"});
   siteFooter.innerHTML = `
     <div class="footer-links-row">
@@ -837,6 +870,7 @@ function render() {
   renderProfile();
 }
 
+/* POLICY CONTENT EXACTLY MATCHED WITH TRADEMARK DISCLAIMERS */
 const POLICIES = {
   terms: {
     title: "Terms & Conditions",
@@ -1061,7 +1095,6 @@ function closeModal() {
   document.getElementById("policyModal").classList.remove("active");
 }
 
-/* ⚡ FINAL WORKING PROCEED FUNCTION (JSON RESPONSE & REDIRECT HANDLER) ⚡ */
 async function proceed() {
     if (!state.mobile.trim() || !state.target.trim()) {
         alert("Please complete mobile number and target handle details fields.");
@@ -1070,7 +1103,6 @@ async function proceed() {
     if (!state.selected) return;
     if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
 
-    // Supabase Store (Background)
     try {
         await supabaseClient
             .from('orders')
@@ -1087,49 +1119,9 @@ async function proceed() {
         console.error("Supabase Save Error:", err);
     }
 
-    // Parameters Setup
-    const serviceType = unitOf(state.cat); 
-    const qtyCount = packQty(state.selected.title);
-    const qtyFormatted = qtyCount.toLocaleString("en-US");
-    const currentCount = state.profile ? (state.profile.followers || 0) : (state.post ? (state.post.likes || 0) : 0);
-    const orderId = "GSM" + Math.floor(100000 + Math.random() * 900000);
-    const cleanTarget = cleanHandle(state.target);
-
-    const redirectUrl = `https://growsocialmedia.in/receipt.html?order_id=${orderId}&type=${encodeURIComponent(serviceType)}&qty=${encodeURIComponent(qtyFormatted)}&insta=${encodeURIComponent(cleanTarget)}&phone=${encodeURIComponent(state.mobile.trim())}&current=${currentCount}&amount=${state.selected.price}`;
-    const apiKey = "a0a38d03-e9b8-490c-9df0-7fceb93fd283"; 
-
-    const payload = {
-        "key": apiKey,
-        "client_txn_id": orderId,
-        "amount": state.selected.price.toString(),
-        "p_info": "SMM Order - " + serviceType,
-        "customer_name": cleanTarget || "Customer",
-        "customer_mobile": state.mobile.trim(),
-        "customer_email": "support@growsocialmedia.in",
-        "redirect_url": redirectUrl,
-        "udf1": "growsocialmedia"
-    };
-
-    try {
-        const proxyUrl = "https://corsproxy.io/?";
-        const targetApi = "https://api.ekqr.in/api/create_order";
-
-        const res = await fetch(proxyUrl + encodeURIComponent(targetApi), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        
-        const data = await res.json();
-        
-        if (data.status && data.data && data.data.payment_url) {
-            window.location.href = data.data.payment_url;
-        } else {
-            alert("Payment Gateway Error: " + (data.msg || "Unable to initiate transaction."));
-        }
-    } catch (err) {
-        alert("Server Connection Error! Check your network or API settings.");
-    }
+    state.showTerminal = true;
+    render();
+    requestAnimationFrame(()=>document.getElementById("payment-terminal")?.scrollIntoView({behavior:"smooth"}));
 }
 
 render();
