@@ -1061,7 +1061,7 @@ function closeModal() {
   document.getElementById("policyModal").classList.remove("active");
 }
 
-/* ⚡ DYNAMIC UPIGATEWAY (EKQR) API AUTOMATED PAYMENT PROCESSOR ⚡ */
+/* ⚡ FINAL WORKING PROCEED FUNCTION (JSON RESPONSE & REDIRECT HANDLER) ⚡ */
 async function proceed() {
     if (!state.mobile.trim() || !state.target.trim()) {
         alert("Please complete mobile number and target handle details fields.");
@@ -1070,7 +1070,7 @@ async function proceed() {
     if (!state.selected) return;
     if (needsPost(state.cat) ? !state.postConfirmed : !state.profileConfirmed) return;
 
-    // Supabase Store
+    // Supabase Store (Background)
     try {
         await supabaseClient
             .from('orders')
@@ -1087,19 +1087,16 @@ async function proceed() {
         console.error("Supabase Save Error:", err);
     }
 
-    // Dynamic Parameter Parsing for Receipt
-    const serviceType = unitOf(state.cat); // Likes, Views, Reposts, etc.
+    // Parameters Setup
+    const serviceType = unitOf(state.cat); 
     const qtyCount = packQty(state.selected.title);
     const qtyFormatted = qtyCount.toLocaleString("en-US");
     const currentCount = state.profile ? (state.profile.followers || 0) : (state.post ? (state.post.likes || 0) : 0);
     const orderId = "GSM" + Math.floor(100000 + Math.random() * 900000);
     const cleanTarget = cleanHandle(state.target);
 
-    // ⚠️ Dynamic Auto Redirect Link to Receipt.html
     const redirectUrl = `https://growsocialmedia.in/receipt.html?order_id=${orderId}&type=${encodeURIComponent(serviceType)}&qty=${encodeURIComponent(qtyFormatted)}&insta=${encodeURIComponent(cleanTarget)}&phone=${encodeURIComponent(state.mobile.trim())}&current=${currentCount}&amount=${state.selected.price}`;
-
-    // ⚠️ UPIGateway (EKQR) API Call
-    const apiKey = "a0a38d03-e9b8-490c-9df0-7fceb93fd283"; //
+    const apiKey = "a0a38d03-e9b8-490c-9df0-7fceb93fd283"; 
 
     const payload = {
         "key": apiKey,
@@ -1114,17 +1111,21 @@ async function proceed() {
     };
 
     try {
-        const res = await fetch("https://api.ekqr.in/api/create_order", {
+        const proxyUrl = "https://corsproxy.io/?";
+        const targetApi = "https://api.ekqr.in/api/create_order";
+
+        const res = await fetch(proxyUrl + encodeURIComponent(targetApi), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
         });
+        
         const data = await res.json();
+        
         if (data.status && data.data && data.data.payment_url) {
-            // Direct Gateway Page Redirect
             window.location.href = data.data.payment_url;
         } else {
-            alert("Payment Gateway Error: " + (data.msg || "Unable to initiate transaction. Check API Key."));
+            alert("Payment Gateway Error: " + (data.msg || "Unable to initiate transaction."));
         }
     } catch (err) {
         alert("Server Connection Error! Check your network or API settings.");
